@@ -1,4 +1,4 @@
-# Flomics/rnaseq: Usage
+# mpozud00/demultiplexing: Usage
 
 ## Table of contents
 

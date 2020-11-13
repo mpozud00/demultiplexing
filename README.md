@@ -38,7 +38,6 @@ See [usage docs](docs/usage.md) for all of the available options when running th
 The mpozud00/demultiplexing pipeline comes with documentation about the pipeline, found in the `docs/` directory:
 
 1. [Running the pipeline](docs/usage.md)
-2. [Output and how to interpret the results](docs/output.md)
 
 ### Credits
 
