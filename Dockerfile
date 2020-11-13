@@ -1,7 +1,14 @@
-FROM nfcore/base:1.7
-LABEL authors="mpozud00@gmail.com" \
+FROM nfcore/base:1.9
+LABEL authors="Marta Pozuelo del Rio" \
       description="Docker image containing all requirements for the mpozud00/demultiplexing pipeline"
 
+
+# Install the conda environment
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
-ENV PATH /opt/conda/envs/mpozuelo-demultiplexing/bin:$PATH
+
+# Add conda installation dir to PATH (instead of doing 'conda activate')
+ENV PATH /opt/conda/envs/mpozuelo-demultiplexing-1.0/bin:$PATH
+
+# Dump the details of the installed packages to a file for posterity
+RUN conda env export --name mpozud00-demultiplexing-1.0 > mpozud00-demultiplexing-1.0.yml

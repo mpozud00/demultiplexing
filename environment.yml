@@ -1,12 +1,15 @@
 # You can use this file to create a conda environment for this pipeline:
 #   conda env create -f environment.yml
-name: mpozud00-demultiplexing
+name: mpozud00-demultiplexing-1.0
 channels:
   - conda-forge
   - bioconda
   - defaults
 
 dependencies:
-  - python=3.6.10
-  - fastqc=0.11.8
+  ##conda forge packages
+  - conda-forge::python=3.6.10
+
+  ##bioconda packages
+  - bioconda::fastqc=0.11.9
   - bioconda::cutadapt=3.0
