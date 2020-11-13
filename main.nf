@@ -145,7 +145,7 @@ process get_software_versions {
 
 
 /*
- * LOAD SAMPLESHEET and assign each
+ * LOAD SAMPLESHEET and assign get the columns we will use for demultiplexing
 */
 
 ch_input

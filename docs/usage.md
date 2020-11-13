@@ -123,6 +123,7 @@ Please note the following requirements:
   1.5 Run ID
   1.6 Lane
 2. The samplesheet must not have headers
+3. Your fastq files must be stored as follows: working_directory/data/fastq/run_id/lane/run_id_lane_read{1,2}.fq.gz
 
 
 
