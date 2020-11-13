@@ -8,7 +8,7 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 
 # Add conda installation dir to PATH (instead of doing 'conda activate')
-ENV PATH /opt/conda/envs/mpozuelo-demultiplexing-1.0/bin:$PATH
+ENV PATH /opt/conda/envs/mpozud00-demultiplexing-1.0/bin:$PATH
 
 # Dump the details of the installed packages to a file for posterity
 RUN conda env export --name mpozud00-demultiplexing-1.0 > mpozud00-demultiplexing-1.0.yml
