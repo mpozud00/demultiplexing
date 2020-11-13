@@ -54,6 +54,19 @@ if (params.help) {
  * SET UP CONFIGURATION VARIABLES
  */
 
+
+ // Has the run name been specified by the user?
+ //  this has the bonus effect of catching both -name and --name
+ custom_runName = params.name
+ if (!(workflow.runName ==~ /[a-z]+_[a-z]+/)) {
+   custom_runName = workflow.runName
+ }
+ else{
+   workflow.runName = params.user + " " + params.timestamp
+   custom_runName = workflow.runName
+ }
+
+
 // Define regular variables so that they can be overwritten
 max_errors = params.max_errors
 
@@ -65,12 +78,6 @@ if (!params.outdir) {
   params.outdir = params.run
 }
 
-
-////////////////////////////////////////////////////
-/* --          CONFIG FILES                    -- */
-////////////////////////////////////////////////////
-
-ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
 
 
 // Header log info
@@ -148,15 +155,11 @@ process get_software_versions {
  * LOAD SAMPLESHEET and assign get the columns we will use for demultiplexing
 */
 
-ch_input
+Channel
+  .from( ch_input )
   .splitCsv(header:false, sep:'\t')
-  .map { ch_input }
-  .into { ch_samplesheet_demux }
-
-ch_samplesheet_demux
-  .map { [ it[0], it[1], it[2], it[3], it[4], it[5] ] }
-  .set { ch_demux }
-
+  .view { it = ["${it[0]}", "${it[1]}", "${it[2]}", "${it[3]}", "${it[4]}", "${it[5]}"]}
+  .into { ch_demux }
 
 
 /*
@@ -194,7 +197,7 @@ process demux_index {
     cutadapt \
     -e $max_errors \
     --no-indels \
-    -a ${sample}="${index}$" \
+    -a $sample=\"$index\$\" \
     -o $read2_index -p $read1_index \
     $read2 $read1 \
     $discard
@@ -247,7 +250,7 @@ process demux_index2 {
     cutadapt \
     -e $max_errors \
     --no-indels \
-    -a ${sample}="${index2}$" \
+    -a $sample=\"$index2\$\" \
     -o $read2_index2 -p $read1_index2 \
     $read2 $read1 \
     $discard
@@ -292,7 +295,7 @@ process demux_BC {
     cutadapt \
     -e $max_errors \
     --no-indels \
-    -g ${sample}="^${barcode}" \
+    -g $sample=\"^$barcode\" \
     -o $read1_BC -p $read2_BC \
     $read1 $read2 \
     $discard
@@ -321,7 +324,7 @@ process demux_BC {
      label 'process_medium'
      publishDir "${params.outdir}/${run_id}/${lane}/4-fastqc", mode: 'copy',
      saveAs: { filename ->
-       if filename.endsWith(".zip")  "zips/$filename" : filename
+       filename.endsWith(".zip") ? "zips/$filename" : filename
      }
 
      input:
@@ -338,26 +341,6 @@ process demux_BC {
  } else {
    fastqc_results = Channel.empty()
  }
-
-
-/*
- * STEP 15 - Output Description HTML
- */
-
-process output_documentation {
-    publishDir "${params.outdir}/pipeline_info", mode: params.publish_dir_mode
-
-    input:
-    file output_docs from ch_output_docs
-
-    output:
-    file "results_description.html"
-
-    script:
-    """
-    markdown_to_html.r $output_docs results_description.html
-    """
-}
 
 
 /*
@@ -472,7 +455,7 @@ def hasExtension(it, extension) {
     it.toString().toLowerCase().endsWith(extension.toLowerCase())
 }
 
-def flomicsHeader() {
+def mpozud00Header() {
   // Log colors ANSI codes
   c_blue = params.monochrome_logs ? '' : "\033[0;34m";
   c_dim = params.monochrome_logs ? '' : "\033[2m";
@@ -482,7 +465,7 @@ def flomicsHeader() {
 
   return """    -${c_dim}--------------------------------------------------${c_reset}-
   ${c_blue}  __  __  __   __  ___         ${c_reset}
-  ${c_blue}  | \/ | |__| |  |  /  |  |     ${c_reset}
+  ${c_blue}  | \\/ | |__| |  |  /  |  |     ${c_reset}
   ${c_blue}  |    | |    |__| /__ |__|         ${c_reset}
   ${c_white}  mpozud00/demultiplexing v${workflow.manifest.version}${c_reset}
   -${c_dim}--------------------------------------------------${c_reset}-
