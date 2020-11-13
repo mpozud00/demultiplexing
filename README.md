@@ -42,4 +42,4 @@ The mpozud00/demultiplexing pipeline comes with documentation about the pipeline
 
 ### Credits
 
-These scripts were originally written for demultiplexing Illumina data with i5 and i7 adapters by Marta Pozuelo ([@mpozuelo-flomics](https://github.com/mpozuelo-flomics))
+These scripts were originally written for demultiplexing Illumina data with i5 and i7 adapters by Marta Pozuelo ([@mpozuelo-flomics](https://github.com/mpozud00))
