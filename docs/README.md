@@ -1,6 +1,6 @@
-# Flomics/rnaseq: Documentation
+# mpozud00/demultiplexing: Documentation
 
-The Flomics/rnaseq documentation is split into the following files:
+The mpozud00/demultiplexing documentation is split into the following files:
 
 1. [Installation](https://nf-co.re/usage/installation)
 2. Pipeline configuration

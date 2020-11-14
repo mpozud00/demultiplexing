@@ -21,8 +21,6 @@
   * [Custom resource requests](#custom-resource-requests)
 * [Other command line parameters](#other-command-line-parameters)
   * [`--outdir`](#--outdir)
-  * [`--email`](#--email)
-  * [`--email_on_fail`](#--email_on_fail)
   * [`-name`](#-name)
   * [`-resume`](#-resume)
   * [`-c`](#-c)
@@ -31,9 +29,7 @@
   * [`--max_memory`](#--max_memory)
   * [`--max_time`](#--max_time)
   * [`--max_cpus`](#--max_cpus)
-  * [`--hisat_build_memory`](#--hisat_build_memory)
   * [`--sampleLevel`](#--samplelevel)
-  * [`--plaintext_email`](#--plaintext_email)
   * [`--monochrome_logs`](#--monochrome_logs)
   * [`--multiqc_config`](#--multiqc_config)
 * [Stand-alone scripts](#stand-alone-scripts)
@@ -80,7 +76,7 @@ nextflow pull mpozud00/demultiplexing
 
 It's a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [mpozud00/demultiplexing releases page](https://github.com/Flomics/rnaseq/releases) and find the latest version number - numeric only (eg. `1.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.0`.
+First, go to the [mpozud00/demultiplexing releases page](https://github.com/mpozud00/demultiplexing/releases) and find the latest version number - numeric only (eg. `1.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.0`.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
@@ -92,8 +88,6 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 If `-profile` is not specified at all the pipeline will be run locally and expects all software to be installed and available on the `PATH`.
 
-* `awsbatch`
-  * A generic configuration profile to be used with AWS Batch.
 * `conda`
   * A generic configuration profile to be used with [conda](https://conda.io/docs/)
   * Pulls most software from [Bioconda](https://bioconda.github.io/)
@@ -169,13 +163,6 @@ If you have any questions or issues please send us a message on [Slack](https://
 
 The output directory where the results will be saved.
 
-### `--email`
-
-Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.
-
-### `--email_on_fail`
-This works exactly as with `--email`, except emails are only sent if the workflow is not successful.
-
 ### `-name`
 
 Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
@@ -249,10 +236,6 @@ Should be a string in the format integer-unit. eg. `--max_cpus 1`
 ### `--sampleLevel`
 
 Used to turn of the edgeR MDS and heatmap. Set automatically when running on fewer than 3 samples.
-
-### `--plaintext_email`
-
-Set to receive plain-text e-mails instead of HTML formatted.
 
 ### `--monochrome_logs`
 
