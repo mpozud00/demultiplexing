@@ -156,14 +156,14 @@ Channel
 /*
  * STEP 1 - Demultiplex - Index1
  */
+//Detect index in the end of read2
 
 process demux_index {
   tag "$sample"
   label 'process_low'
   publishDir "${params.outdir}/${run_id}/${lane}/1-Index-removal/${sample}", mode: 'copy',
   saveAs: { filename ->
-    if (filename.endsWith(".fq.gz")) filename
-    else if (filename.endsWith(".log")) "logs/$filename"
+    filename.endsWith(".log") ? "logs/$filename" : filename
   }
 
   input:
@@ -171,6 +171,7 @@ process demux_index {
 
   output:
   set val(sample), path("*.fq.gz"), val(index), val(index2), val(barcode), val(run_id), val(lane) into ch_demux_index2
+  path("*.{fq.gz,log}")
 
   script:
   discard = params.save_untrimmed ? '' : '--discard-untrimmed'
@@ -203,14 +204,14 @@ process demux_index {
 /*
  * STEP 2 - Demultiplex - Index2
  */
+ //After removing index, remove index2 from the end (again) of read2
 
 process demux_index2 {
   tag "$sample"
   label 'process_low'
   publishDir "${params.outdir}/${run_id}/${lane}/2-Index2-removal/${sample}", mode: 'copy',
   saveAs: { filename ->
-    if (filename.endsWith(".fq.gz")) filename
-    else if (filename.endsWith(".log")) "logs/$filename"
+    filename.endsWith(".log") ? "logs/$filename" : filename
   }
 
   input:
@@ -218,6 +219,7 @@ process demux_index2 {
 
   output:
   set val(sample), path("*.fq.gz"), val(index), val(index2), val(barcode), val(run_id), val(lane) into ch_demux_BC
+  path("*.{fq.gz,log}")
 
   script:
   discard = params.save_untrimmed ? '' : '--discard-untrimmed'
@@ -256,14 +258,14 @@ process demux_index2 {
 /*
  * STEP 3 - Demultiplex - BC
  */
+//Detect barcode sequence in the beginning or read1
 
 process demux_BC {
   tag "$sample"
   label 'process_low'
   publishDir "${params.outdir}/${run_id}/${lane}/3-BC-removal/${sample}", mode: 'copy',
   saveAs: { filename ->
-    if (filename.endsWith(".fq.gz")) filename
-    else if (filename.endsWith(".log")) "logs/$filename"
+    filename.endsWith(".log") ? "logs/$filename" : filename
   }
 
   input:
@@ -271,6 +273,7 @@ process demux_BC {
 
   output:
   set val(sample), path("*.fq.gz"), val(run_id), val(lane) into ch_fastqc
+  path("*.{fq.gz,log}") 
 
   script:
   discard = params.save_untrimmed ? '' : '--discard-untrimmed'
