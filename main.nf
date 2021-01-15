@@ -76,6 +76,7 @@ if (!params.outdir) {
   params.outdir = params.run
 }
 
+cluster_path = params.cluster_path
 
 
 // Header log info
