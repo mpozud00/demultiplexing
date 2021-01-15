@@ -152,7 +152,7 @@ Channel
   .from( ch_input )
   .splitCsv(header:false, sep:',')
   .map { it = ["${it[0]}", "${it[1]}", "${it[2]}", "${it[3]}", "${it[4]}", "${it[5]}"]}
-  .into { ch_demux }
+  .set { ch_demux }
 
 
 /*
@@ -177,8 +177,8 @@ process demux_index {
 
   script:
   discard = params.save_untrimmed ? '' : '--discard-untrimmed'
-  read1 = file("${cluster_path}/data/01_cal/MGI/${run_id}/${lane}/${run_id}_${lane}_read_1.fq.gz", checkIfExists: true)
-  read2 = file("${cluster_path}/data/01_cal/MGI/${run_id}/${lane}/${run_id}_${lane}_read_2.fq.gz", checkIfExists: true)
+  read1 = file("fastq/${run_id}_${lane}_read_1.fq.gz", checkIfExists: true)
+  read2 = file("fastq/${run_id}_${lane}_read_2.fq.gz", checkIfExists: true)
   read1_index = "${sample}_${run_id}_${lane}_${index}_R1.fq.gz"
   read2_index = "${sample}_${run_id}_${lane}_${index}_R2.fq.gz"
 
