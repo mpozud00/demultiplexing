@@ -151,7 +151,7 @@ process get_software_versions {
 Channel
   .from( ch_input )
   .splitCsv(header:false, sep:',')
-  .map { it = ["${it[0]}", "${it[1]}", "${it[2]}", "${it[3]}", "${it[4]}", "${it[5]}"]}
+  .map { it = ["${it[0]}", "${it[1]}", "${it[2]}", "${it[3]}", "${it[4]}", "${it[5]}", [file("${cluster_path}/data/01_cal/MGI/${it[4]}/${it[5]}/${it[4]}_${it[5]}_read_1.fq.gz", checkIfExists: true)], file("${cluster_path}/data/01_cal/MGI/${it[4]}/${it[5]}/${it[4]}_${it[5]}_read_2.fq.gz", checkIfExists: true)]]}
   .set { ch_demux }
 
 
@@ -169,7 +169,7 @@ process demux_index {
   }
 
   input:
-  set val(sample), val(index), val(index2), val(barcode), val(run_id), val(lane) from ch_demux
+  set val(sample), val(index), val(index2), val(barcode), val(run_id), val(lane), path(reads) from ch_demux
 
   output:
   set val(sample), path("*.fq.gz"), val(index), val(index2), val(barcode), val(run_id), val(lane) into ch_demux_index2
@@ -177,8 +177,8 @@ process demux_index {
 
   script:
   discard = params.save_untrimmed ? '' : '--discard-untrimmed'
-  read1 = "${cluster_path}/data/01_cal/MGI/${run_id}/${lane}/${run_id}_${lane}_read_1.fq.gz"
-  read2 = "${cluster_path}/data/01_cal/MGI/${run_id}/${lane}/${run_id}_${lane}_read_2.fq.gz"
+  read1 = "${reads[0]}"
+  read2 = "${reads[1]}"
   read1_index = "${sample}_${run_id}_${lane}_${index}_R1.fq.gz"
   read2_index = "${sample}_${run_id}_${lane}_${index}_R2.fq.gz"
 
