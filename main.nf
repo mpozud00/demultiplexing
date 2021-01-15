@@ -177,8 +177,8 @@ process demux_index {
 
   script:
   discard = params.save_untrimmed ? '' : '--discard-untrimmed'
-  read1 = file("${cluster_path}/data/01_cal/MGI/${run_id}/${lane}/${run_id}_${lane}_read_1.fq.gz", checkIfExists: true)
-  read2 = file("${cluster_path}/data/01_cal/MGI/${run_id}/${lane}/${run_id}_${lane}_read_2.fq.gz", checkIfExists: true)
+  read1 = "${cluster_path}/data/01_cal/MGI/${run_id}/${lane}/${run_id}_${lane}_read_1.fq.gz"
+  read2 = "${cluster_path}/data/01_cal/MGI/${run_id}/${lane}/${run_id}_${lane}_read_2.fq.gz"
   read1_index = "${sample}_${run_id}_${lane}_${index}_R1.fq.gz"
   read2_index = "${sample}_${run_id}_${lane}_${index}_R2.fq.gz"
 
