@@ -23,6 +23,7 @@ def helpMessage() {
       --input [file]                Samplesheet with indexes and samples information
       -profile                      Configuration profile to use. Can use multiple (comma separated)
                                     Available: conda, docker, singularity.
+      --cluster_path                Cluster path to store data and to search for input data (Default: /datos/ngs/dato-activo)
 
     Demultiplexing parameters:
       --max_errors                  Maximum error rate accepted. For 8bp adapters we need 0.15 to allow 1bp of error. (Default: 0.15)
@@ -149,7 +150,7 @@ process get_software_versions {
 Channel
   .from( ch_input )
   .splitCsv(header:false, sep:'\t')
-  .map { it = ["${it[0]}", "${it[1]}", "${it[2]}", "${it[3]}", "${it[4]}", "${it[5]}", [file("data/fastq/${it[4]}/${it[5]}/${it[4]}_${it[5]}_read_1.fq.gz", checkIfExists: true), file("data/fastq/${it[4]}/${it[5]}/${it[4]}_${it[5]}_read_2.fq.gz", checkIfExists: true)]]}
+  .map { it = ["${it[0]}", "${it[1]}", "${it[2]}", "${it[3]}", "${it[4]}", "${it[5]}", [file("${cluster_path}/data/01_cal/MGI/${it[4]}/${it[5]}/${it[4]}_${it[5]}_read_1.fq.gz", checkIfExists: true), file("${cluster_path}/data/01_cal/MGI/${it[4]}/${it[5]}/${it[4]}_${it[5]}_read_2.fq.gz", checkIfExists: true)]]}
   .set { ch_demux }
 
 
@@ -273,7 +274,7 @@ process demux_BC {
 
   output:
   set val(sample), path("*.fq.gz"), val(run_id), val(lane) into ch_fastqc
-  path("*.{fq.gz,log}") 
+  path("*.{fq.gz,log}")
 
   script:
   discard = params.save_untrimmed ? '' : '--discard-untrimmed'
