@@ -151,7 +151,7 @@ process get_software_versions {
 Channel
   .from( ch_input )
   .splitCsv(header:false, sep:',')
-  .map { it = ["${it[0]}", "${it[1]}", "${it[2]}", "${it[3]}", "${it[4]}", "${it[5]}", [file("${cluster_path}/data/01_cal/MGI/${it[4]}/${it[5]}/${it[4]}_${it[5]}_read_1.fq.gz", checkIfExists: true), file("${cluster_path}/data/01_cal/MGI/${it[4]}/${it[5]}/${it[4]}_${it[5]}_read_2.fq.gz", checkIfExists: true)]]}
+  .map { it = ["${it[0]}", "${it[1]}", "${it[2]}", "${it[3]}", "${it[4]}", "${it[5]}", [file("fastq/${it[4]}_${it[5]}_read_1.fq.gz", checkIfExists: true), file("fastq/${it[4]}_${it[5]}_read_2.fq.gz", checkIfExists: true)]]}
   .set { ch_demux }
 
 
