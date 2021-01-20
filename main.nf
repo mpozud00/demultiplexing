@@ -118,30 +118,6 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
    return yaml_file
 }
 
-/*
- * Parse software version numbers
- */
-process get_software_versions {
-    publishDir "${params.outdir}/pipeline_info", mode: 'copy',
-        saveAs: { filename ->
-            if (filename.indexOf(".csv") > 0) filename
-            else null
-        }
-
-    output:
-    file 'software_versions_mqc.yaml' into software_versions_yaml
-    file "software_versions.csv"
-
-    script:
-    """
-    echo $workflow.manifest.version &> v_ngi_rnaseq.txt
-    echo $workflow.nextflow.version &> v_nextflow.txt
-    fastqc --version &> v_fastqc.txt
-    cutadapt --version &> v_cutadapt.txt
-    scrape_software_versions.py &> software_versions_mqc.yaml
-    """
-}
-
 
 
 /*
@@ -172,7 +148,8 @@ process demux_index {
   set val(sample), val(index), val(index2), val(barcode), val(run_id), val(lane), path(reads) from ch_demux
 
   output:
-  set val(sample), path("*.fq.gz"), val(index), val(index2), val(barcode), val(run_id), val(lane) into ch_demux_index2
+  set val(sample), path("*.fq.gz"), val(barcode), val(run_id), val(lane) into ch_demux_BC
+  //set val(sample), path("*.fq.gz"), val(index), val(index2), val(barcode), val(run_id), val(lane) into ch_demux_index2
   path("*.{fq.gz,log}")
 
   script:
@@ -208,7 +185,7 @@ process demux_index {
  */
  //After removing index, remove index2 from the end (again) of read2
 
-process demux_index2 {
+/*process demux_index2 {
   tag "$sample"
   label 'process_high'
   publishDir "${params.outdir}/${run_id}/${lane}/2-Index2-removal/${sample}", mode: 'copy',
@@ -271,7 +248,7 @@ process demux_BC {
   }
 
   input:
-  set val(sample), path(reads), val(index), val(index2), val(barcode), val(run_id), val(lane) from ch_demux_BC
+  set val(sample), path(reads), val(barcode), val(run_id), val(lane) from ch_demux_BC
 
   output:
   set val(sample), path("*.fq.gz"), val(run_id), val(lane) into ch_fastqc
@@ -331,6 +308,32 @@ process demux_BC {
  } else {
    fastqc_results = Channel.empty()
  }
+
+
+
+ /*
+  * Parse software version numbers
+  */
+ process get_software_versions {
+     publishDir "${params.outdir}/pipeline_info", mode: 'copy',
+         saveAs: { filename ->
+             if (filename.indexOf(".csv") > 0) filename
+             else null
+         }
+
+     output:
+     file 'software_versions_mqc.yaml' into software_versions_yaml
+     file "software_versions.csv"
+
+     script:
+     """
+     fastqc --version &> v_fastqc.txt
+     cutadapt --version &> v_cutadapt.txt
+     scrape_software_versions.py &> software_versions_mqc.yaml
+     """
+ }
+
+
 
 
 /*
